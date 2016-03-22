@@ -11,18 +11,18 @@ import org.apache.http.client.ClientProtocolException;
 import com.google.gson.Gson;
 
 public class WebGate {
-	private Map<String, String> tabCorr;
+	private Map<String, String> restUrlMappings;
 	private String baseUrl;
 
 	public WebGate() {
 		baseUrl = "http://127.0.0.1:8080/Quiz-Rest/rest/";
-		tabCorr = new HashMap<>();
-		tabCorr.put("Utilisateur", "user");
+		restUrlMappings = new HashMap<>();
+		restUrlMappings.put("Utilisateur", "user");
 	}
 
 	public <T> List<T> getAll(Class<T> clazz) throws ClientProtocolException, IOException {
 		List<T> result = new ArrayList<T>();
-		String jsonUsers = HttpUtils.getHTML(baseUrl + tabCorr.get(clazz.getSimpleName()) + "/all");
+		String jsonUsers = HttpUtils.getHTML(baseUrl + restUrlMappings.get(clazz.getSimpleName()) + "/all");
 		Gson gson = MyGsonBuilder.create();
 		result = gson.fromJson(jsonUsers, new ListType<T>(clazz));
 		return result;
