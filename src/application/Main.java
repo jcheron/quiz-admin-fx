@@ -78,11 +78,9 @@ public class Main extends Application {
 	}
 
 	/**
-	 * Opens a dialog to edit details for the specified person. If the user clicks OK, the changes are saved into the provided person object
-	 * and true is returned.
+	 * Opens a dialog to edit details for the specified person. If the user clicks OK, the changes are saved into the provided person object and true is returned.
 	 *
-	 * @param user
-	 *            the person object to be edited
+	 * @param user the person object to be edited
 	 * @return true if the user clicked OK, false otherwise.
 	 */
 	public boolean showPersonEditDialog(Utilisateur user) {
@@ -155,5 +153,9 @@ public class Main extends Application {
 
 	public void setPersonData(ObservableList<Utilisateur> personData) {
 		this.usersList = personData;
+	}
+
+	public WebGate getWebGate() {
+		return webGate;
 	}
 }

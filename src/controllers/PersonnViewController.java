@@ -1,5 +1,7 @@
 package controllers;
 
+import java.io.IOException;
+
 import application.Main;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -8,8 +10,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import qcm.models.pojo.Utilisateur;
 import javafx.scene.control.TableView;
+import qcm.models.pojo.Utilisateur;
 
 public class PersonnViewController {
 	@FXML
@@ -116,6 +118,12 @@ public class PersonnViewController {
 		boolean okClicked = mainApp.showPersonEditDialog(user);
 		if (okClicked) {
 			mainApp.getPersonData().add(user);
+			try {
+				mainApp.getWebGate().add(user);
+			} catch (IllegalArgumentException | IllegalAccessException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -125,6 +133,12 @@ public class PersonnViewController {
 			boolean okClicked = mainApp.showPersonEditDialog(selectedUser);
 			if (okClicked) {
 				showUser(selectedUser);
+				try {
+					mainApp.getWebGate().update(selectedUser, selectedUser.getId());
+				} catch (IllegalArgumentException | IllegalAccessException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				personnTable.refresh();
 			}
 
