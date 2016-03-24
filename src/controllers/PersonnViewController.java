@@ -134,8 +134,8 @@ public class PersonnViewController {
 			if (okClicked) {
 				showUser(selectedUser);
 				try {
-					mainApp.getWebGate().update(selectedUser, selectedUser.getId());
-				} catch (IllegalArgumentException | IllegalAccessException | IOException e) {
+					mainApp.getTaskQueue().update(selectedUser, selectedUser.getId());
+				} catch (IllegalArgumentException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

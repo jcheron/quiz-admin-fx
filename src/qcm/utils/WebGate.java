@@ -32,13 +32,15 @@ public class WebGate {
 		Map<String, Object> result = new HashMap<>();
 		Field[] declaredFields = o.getClass().getDeclaredFields();
 		for (Field field : declaredFields) {
-			field.setAccessible(true);
-			System.out.println(field.getName());
-			try {
-				result.put(field.getName(), field.get(o));
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (field.getType().isPrimitive() || PrimitiveTypes.isWrapperType(field.getType())) {
+				field.setAccessible(true);
+				System.out.println(field.getName());
+				try {
+					result.put(field.getName(), field.get(o));
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		return result;

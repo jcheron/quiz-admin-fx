@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcm.models.pojo.Utilisateur;
 import qcm.utils.WebGate;
+import qcm.utils.saves.TaskQueue;
 
 public class Main extends Application {
 	private Stage primaryStage;
@@ -24,6 +25,7 @@ public class Main extends Application {
 	private ObservableList<Utilisateur> usersList;
 	private PersonnViewController personnViewController;
 	private WebGate webGate;
+	private TaskQueue taskQueue;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -121,6 +123,9 @@ public class Main extends Application {
 	public Main() {
 		super();
 		webGate = new WebGate();
+		taskQueue = new TaskQueue("mainFx", webGate);
+		taskQueue.start();
+
 		usersList = FXCollections.observableArrayList();
 		try {
 			List<Utilisateur> users = webGate.getAll(Utilisateur.class);
@@ -128,7 +133,7 @@ public class Main extends Application {
 				usersList.add(u);
 			}
 		} catch (IOException e) {
-			// Alert Bootstrap JavaFX
+			// TODO Alert Bootstrap JavaFX
 			e.printStackTrace();
 		}
 
@@ -157,5 +162,15 @@ public class Main extends Application {
 
 	public WebGate getWebGate() {
 		return webGate;
+	}
+
+	public TaskQueue getTaskQueue() {
+		return taskQueue;
+	}
+
+	@Override
+	public void stop() throws Exception {
+		taskQueue.stop();
+		super.stop();
 	}
 }
