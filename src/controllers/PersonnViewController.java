@@ -51,7 +51,8 @@ public class PersonnViewController {
 			return new SimpleObjectProperty<>(user.getNom());
 		});
 		showUser(null);
-		personnTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUser(newValue));
+		personnTable.getSelectionModel().selectedItemProperty()
+				.addListener((observable, oldValue, newValue) -> showUser(newValue));
 	}
 
 	public TableView<Utilisateur> getPersonnTable() {

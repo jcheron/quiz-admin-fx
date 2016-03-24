@@ -1,11 +1,12 @@
 package qcm.utils.saves;
 
+import java.util.Observable;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.TimeUnit;
 
 import qcm.utils.WebGate;
 
-public class TaskQueue {
+public class TaskQueue extends Observable {
 	private DelayQueue<Task> tasks;
 	private Thread thread;
 	private String name;
@@ -19,7 +20,9 @@ public class TaskQueue {
 			try {
 				Task task = tasks.take();
 				try {
-					task.call();
+					Object result = task.call();
+					TaskQueue.this.setChanged();
+					notifyObservers(result);
 					System.out.printf("[%s] - Take object = %s%n", Thread.currentThread().getName(), task);
 				} catch (Exception ex) {
 					// TODO alert Exception when saving
@@ -45,6 +48,27 @@ public class TaskQueue {
 			}
 		};
 		put(new Task(updateOperation, 5000));
+	}
+
+	public void delete(Object o, Object id) {
+		SaveOperation deleteOperation = new SaveOperation(o, id) {
+			@Override
+			public Object call() throws Exception {
+				return webGate.delete(o, id);
+			}
+		};
+		put(new Task(deleteOperation, 10000));
+	}
+
+	public void get(Class<? extends Object> clazz, int offset, int limit) {
+		SaveOperation getOperation = new SaveOperation() {
+
+			@Override
+			public Object call() throws Exception {
+				return webGate.getAll(clazz, offset, limit);
+			}
+		};
+		put(new Task(getOperation, 1000));
 	}
 
 	public void start() {
