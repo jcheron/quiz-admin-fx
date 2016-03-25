@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -30,6 +31,12 @@ public class PersonnViewController {
 	@FXML
 	private Label emailLabel;
 
+	@FXML
+	private Label lblCount;
+
+	@FXML
+	private ProgressBar pbTasks;
+
 	private Main mainApp;
 
 	public PersonnViewController() {
@@ -51,8 +58,7 @@ public class PersonnViewController {
 			return new SimpleObjectProperty<>(user.getNom());
 		});
 		showUser(null);
-		personnTable.getSelectionModel().selectedItemProperty()
-				.addListener((observable, oldValue, newValue) -> showUser(newValue));
+		personnTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUser(newValue));
 	}
 
 	public TableView<Utilisateur> getPersonnTable() {
@@ -82,7 +88,8 @@ public class PersonnViewController {
 	public void setMainApp(Main mainApp) {
 		this.mainApp = mainApp;
 		personnTable.setItems(mainApp.getPersonData());
-
+		lblCount.textProperty().bind(mainApp.getTaskQueue().getService().progressProperty().asString());
+		pbTasks.progressProperty().bind(mainApp.getTaskQueue().getService().progressProperty());
 	}
 
 	private void showUser(Utilisateur user) {

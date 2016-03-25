@@ -74,14 +74,20 @@ public class WebGate {
 		return HttpUtils.deleteHTML(baseUrl + getControllerUrl(object.getClass()) + "/" + String.valueOf(id));
 	}
 
-	public <T> String add(T object)
-			throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
+	public <T> String add(T object) throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
 		return HttpUtils.putHTML(baseUrl + getControllerUrl(object.getClass()) + "/add", beanToMap(object));
 	}
 
-	public <T> String update(T object, Object id)
-			throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
+	public <T> String update(T object, Object id) throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
 		return HttpUtils.postHTML(baseUrl + getControllerUrl(object.getClass()) + "/update/" + id, beanToMap(object));
+	}
+
+	public <T> int count(Class<T> clazz) throws ClientProtocolException, IOException {
+		String jsonO = HttpUtils.getHTML(baseUrl + getControllerUrl(clazz) + "/count");
+		Gson gson = MyGsonBuilder.create();
+		int result = gson.fromJson(jsonO, Integer.class);
+		return result;
+
 	}
 
 }

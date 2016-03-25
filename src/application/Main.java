@@ -19,6 +19,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcm.models.pojo.Utilisateur;
 import qcm.utils.WebGate;
+import qcm.utils.saves.SaveOperationTypes;
 import qcm.utils.saves.TaskQueue;
 
 public class Main extends Application implements Observer {
@@ -37,6 +38,7 @@ public class Main extends Application implements Observer {
 		initRootLayout();
 
 		showPersonOverview();
+		taskQueue.start();
 	}
 
 	/**
@@ -82,11 +84,9 @@ public class Main extends Application implements Observer {
 	}
 
 	/**
-	 * Opens a dialog to edit details for the specified person. If the user clicks OK, the changes are saved into the provided person object
-	 * and true is returned.
+	 * Opens a dialog to edit details for the specified person. If the user clicks OK, the changes are saved into the provided person object and true is returned.
 	 *
-	 * @param user
-	 *            the person object to be edited
+	 * @param user the person object to be edited
 	 * @return true if the user clicked OK, false otherwise.
 	 */
 	public boolean showPersonEditDialog(Utilisateur user) {
@@ -129,16 +129,13 @@ public class Main extends Application implements Observer {
 		webGate = new WebGate();
 		taskQueue = new TaskQueue("mainFx", webGate);
 		taskQueue.addObserver(this);
-		taskQueue.start();
 
 		usersList = FXCollections.observableArrayList();
 		/*
-		 * try { List<Utilisateur> users = webGate.getAll(Utilisateur.class); for (Utilisateur u : users) { usersList.add(u); } } catch
-		 * (IOException e) { // TODO Alert Bootstrap JavaFX e.printStackTrace(); }
+		 * try { List<Utilisateur> users = webGate.getAll(Utilisateur.class); for (Utilisateur u : users) { usersList.add(u); } } catch (IOException e) { // TODO Alert Bootstrap JavaFX
+		 * e.printStackTrace(); }
 		 */
-		for (int i = 0; i < 10; i++) {
-			taskQueue.get(Utilisateur.class, i, 1);
-		}
+		taskQueue.getAll(Utilisateur.class);
 
 	}
 
@@ -177,12 +174,14 @@ public class Main extends Application implements Observer {
 		super.stop();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Observable o, Object arg) {
 		System.out.println(o);
 		System.out.println(arg);
-		if (arg instanceof List) {
-			List<Utilisateur> lstUser = (List<Utilisateur>) arg;
+		Object[] args = (Object[]) arg;
+		if (args[0].equals(SaveOperationTypes.GET)) {
+			List<Utilisateur> lstUser = (List<Utilisateur>) args[1];
 			for (Utilisateur u : lstUser) {
 				usersList.add(u);
 			}
