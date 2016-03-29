@@ -42,4 +42,8 @@ public class DelayedTask implements Delayed {
 		return operation;
 	}
 
+	public Class<?> getClazz() {
+		return operation.getClazz();
+	}
+
 }

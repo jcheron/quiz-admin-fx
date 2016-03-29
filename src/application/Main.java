@@ -84,9 +84,11 @@ public class Main extends Application implements Observer {
 	}
 
 	/**
-	 * Opens a dialog to edit details for the specified person. If the user clicks OK, the changes are saved into the provided person object and true is returned.
+	 * Opens a dialog to edit details for the specified person. If the user clicks OK, the changes are saved into the provided person object
+	 * and true is returned.
 	 *
-	 * @param user the person object to be edited
+	 * @param user
+	 *            the person object to be edited
 	 * @return true if the user clicked OK, false otherwise.
 	 */
 	public boolean showPersonEditDialog(Utilisateur user) {
@@ -132,8 +134,8 @@ public class Main extends Application implements Observer {
 
 		usersList = FXCollections.observableArrayList();
 		/*
-		 * try { List<Utilisateur> users = webGate.getAll(Utilisateur.class); for (Utilisateur u : users) { usersList.add(u); } } catch (IOException e) { // TODO Alert Bootstrap JavaFX
-		 * e.printStackTrace(); }
+		 * try { List<Utilisateur> users = webGate.getAll(Utilisateur.class); for (Utilisateur u : users) { usersList.add(u); } } catch
+		 * (IOException e) { // TODO Alert Bootstrap JavaFX e.printStackTrace(); }
 		 */
 		taskQueue.getAll(Utilisateur.class);
 
@@ -177,13 +179,15 @@ public class Main extends Application implements Observer {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println(o);
-		System.out.println(arg);
+		// System.out.println(o);
+		// System.out.println(arg);
 		Object[] args = (Object[]) arg;
 		if (args[0].equals(SaveOperationTypes.GET)) {
-			List<Utilisateur> lstUser = (List<Utilisateur>) args[1];
-			for (Utilisateur u : lstUser) {
-				usersList.add(u);
+			if (args[1].equals(Utilisateur.class)) {
+				List<Utilisateur> lstUser = (List<Utilisateur>) args[2];
+				for (Utilisateur u : lstUser) {
+					usersList.add(u);
+				}
 			}
 		}
 	}

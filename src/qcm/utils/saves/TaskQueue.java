@@ -18,7 +18,7 @@ public class TaskQueue extends Observable {
 		this.name = name;
 		tasks = new DelayQueue<DelayedTask>();
 		this.webGate = webGate;
-		this.rowGroupSize = 10;
+		this.rowGroupSize = 30;
 		service = new DelayedService(this);
 	}
 
@@ -27,7 +27,7 @@ public class TaskQueue extends Observable {
 	}
 
 	public void add(Object o) {
-		SaveOperation updateOperation = new SaveOperation(SaveOperationTypes.ADD, o) {
+		SaveOperation updateOperation = new SaveOperation(SaveOperationTypes.ADD, o.getClass(), o) {
 			@Override
 			public Object call() throws Exception {
 				return webGate.add(o);
@@ -37,7 +37,7 @@ public class TaskQueue extends Observable {
 	}
 
 	public void update(Object o, Object id) {
-		SaveOperation updateOperation = new SaveOperation(SaveOperationTypes.UPDATE, o, id) {
+		SaveOperation updateOperation = new SaveOperation(SaveOperationTypes.UPDATE, o.getClass(), o, id) {
 			@Override
 			public Object call() throws Exception {
 				return webGate.update(o, id);
@@ -47,7 +47,7 @@ public class TaskQueue extends Observable {
 	}
 
 	public void delete(Object o, Object id) {
-		SaveOperation deleteOperation = new SaveOperation(SaveOperationTypes.DELETE, o, id) {
+		SaveOperation deleteOperation = new SaveOperation(SaveOperationTypes.DELETE, o.getClass(), o, id) {
 			@Override
 			public Object call() throws Exception {
 				return webGate.delete(o, id);
@@ -57,7 +57,7 @@ public class TaskQueue extends Observable {
 	}
 
 	public void get(Class<? extends Object> clazz, int offset, int limit) {
-		SaveOperation getOperation = new SaveOperation(SaveOperationTypes.GET) {
+		SaveOperation getOperation = new SaveOperation(SaveOperationTypes.GET, clazz) {
 
 			@Override
 			public Object call() throws Exception {
@@ -100,9 +100,9 @@ public class TaskQueue extends Observable {
 		return tasks;
 	}
 
-	public void setChanged(SaveOperationTypes type, Object resultCall) {
+	public void setChanged(SaveOperationTypes type, Class<?> clazz, Object resultCall) {
 		this.setChanged();
-		notifyObservers(new Object[] { type, resultCall });
+		notifyObservers(new Object[] { type, clazz, resultCall });
 	}
 
 	public DelayedService getService() {

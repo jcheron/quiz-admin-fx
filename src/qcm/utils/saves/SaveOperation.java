@@ -6,9 +6,11 @@ import java.util.concurrent.Callable;
 public abstract class SaveOperation implements Callable<Object> {
 	private Object[] datas;
 	private SaveOperationTypes type;
+	private Class<?> clazz;
 
-	public SaveOperation(SaveOperationTypes type, Object... datas) {
+	public SaveOperation(SaveOperationTypes type, Class<?> clazz, Object... datas) {
 		super();
+		this.clazz = clazz;
 		this.datas = datas;
 		this.type = type;
 	}
@@ -32,5 +34,13 @@ public abstract class SaveOperation implements Callable<Object> {
 
 	public void setType(SaveOperationTypes type) {
 		this.type = type;
+	}
+
+	public Class<?> getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(Class<?> clazz) {
+		this.clazz = clazz;
 	}
 }
