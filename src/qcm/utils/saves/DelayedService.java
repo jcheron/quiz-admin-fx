@@ -30,7 +30,7 @@ public class DelayedService extends Service<Object> {
 							ex.printStackTrace();
 							// TODO alert Exception when saving
 						}
-						Thread.sleep(1000);
+						Thread.sleep(500);
 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

@@ -72,7 +72,7 @@
                     </buttons>
                   </ButtonBar>
                   <Label fx:id="lblCount" layoutX="40.0" layoutY="220.0" prefHeight="21.0" prefWidth="53.0" text="Label" AnchorPane.bottomAnchor="58.0" AnchorPane.leftAnchor="40.0" />
-                  <ProgressBar fx:id="pbTasks" layoutX="100.0" layoutY="220.0" prefHeight="21.0" prefWidth="280.0" progress="0.0" AnchorPane.bottomAnchor="58.0" AnchorPane.rightAnchor="15.0" />
+                  <ProgressBar fx:id="pbTasks" layoutX="100.0" layoutY="220.0" opacity="0.68" prefHeight="21.0" prefWidth="280.0" progress="0.0" AnchorPane.bottomAnchor="58.0" AnchorPane.rightAnchor="15.0" />
                </children>
             </AnchorPane>
         </items>

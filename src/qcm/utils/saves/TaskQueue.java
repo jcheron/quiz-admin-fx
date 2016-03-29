@@ -18,7 +18,7 @@ public class TaskQueue extends Observable {
 		this.name = name;
 		tasks = new DelayQueue<DelayedTask>();
 		this.webGate = webGate;
-		this.rowGroupSize = 15;
+		this.rowGroupSize = 10;
 		service = new DelayedService(this);
 	}
 
@@ -93,7 +93,6 @@ public class TaskQueue extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		service.cancel();
 		service = null;
 	}
 
