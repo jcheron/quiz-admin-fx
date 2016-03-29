@@ -8,10 +8,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import qcm.models.pojo.Questionnaire;
 import qcm.models.pojo.Utilisateur;
 
 public class PersonnViewController {
@@ -33,6 +35,9 @@ public class PersonnViewController {
 
 	@FXML
 	private Label lblCount;
+
+	@FXML
+	private ListView<Questionnaire> lvQuizzes;
 
 	@FXML
 	private ProgressBar pbTasks;
@@ -58,7 +63,8 @@ public class PersonnViewController {
 			return new SimpleObjectProperty<>(user.getNom());
 		});
 		showUser(null);
-		personnTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUser(newValue));
+		personnTable.getSelectionModel().selectedItemProperty()
+				.addListener((observable, oldValue, newValue) -> showUser(newValue));
 	}
 
 	public TableView<Utilisateur> getPersonnTable() {

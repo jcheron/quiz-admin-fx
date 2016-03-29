@@ -17,6 +17,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import qcm.models.pojo.Questionnaire;
 import qcm.models.pojo.Utilisateur;
 import qcm.utils.WebGate;
 import qcm.utils.saves.SaveOperationTypes;
@@ -26,6 +27,7 @@ public class Main extends Application implements Observer {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private ObservableList<Utilisateur> usersList;
+	private ObservableList<Questionnaire> quizList;
 	private PersonnViewController personnViewController;
 	private WebGate webGate;
 	private TaskQueue taskQueue;
@@ -133,11 +135,13 @@ public class Main extends Application implements Observer {
 		taskQueue.addObserver(this);
 
 		usersList = FXCollections.observableArrayList();
+		quizList = FXCollections.observableArrayList();
 		/*
 		 * try { List<Utilisateur> users = webGate.getAll(Utilisateur.class); for (Utilisateur u : users) { usersList.add(u); } } catch
 		 * (IOException e) { // TODO Alert Bootstrap JavaFX e.printStackTrace(); }
 		 */
 		taskQueue.getAll(Utilisateur.class);
+		taskQueue.getAll(Questionnaire.class);
 
 	}
 
