@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressBar?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="300.0" prefWidth="800.0" stylesheets="@DarkTheme.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PersonnViewController">
+<AnchorPane prefHeight="477.0" prefWidth="1021.0" stylesheets="@DarkTheme.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PersonnViewController">
    <children>
       <SplitPane dividerPositions="0.5" prefHeight="300.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -74,7 +75,8 @@
                   </ButtonBar>
                   <Label fx:id="lblCount" layoutX="40.0" layoutY="220.0" prefHeight="21.0" prefWidth="53.0" text="Label" AnchorPane.bottomAnchor="58.0" AnchorPane.leftAnchor="40.0" />
                   <ProgressBar fx:id="pbTasks" layoutX="100.0" layoutY="220.0" opacity="0.68" prefHeight="21.0" prefWidth="280.0" progress="0.0" AnchorPane.bottomAnchor="58.0" AnchorPane.rightAnchor="15.0" />
-                  <ListView fx:id="lvProjects" layoutX="14.0" layoutY="131.0" prefHeight="72.0" prefWidth="368.0" />
+                  <ListView fx:id="lvQuizzes" layoutX="14.0" layoutY="131.0" prefHeight="248.0" prefWidth="222.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="132.0" />
+                  <ComboBox fx:id="cmbReponses" layoutX="243.0" layoutY="132.0" prefHeight="30.0" prefWidth="255.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="132.0" />
                </children>
             </AnchorPane>
         </items>

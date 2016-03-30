@@ -9,7 +9,6 @@ import controllers.EditController;
 import controllers.MainController;
 import controllers.PersonnViewController;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcm.models.pojo.Questionnaire;
+import qcm.models.pojo.Reponse;
 import qcm.models.pojo.Utilisateur;
 import qcm.utils.WebGate;
 import qcm.utils.saves.SaveOperationTypes;
@@ -28,6 +28,7 @@ public class Main extends Application implements Observer {
 	private BorderPane rootLayout;
 	private ObservableList<Utilisateur> usersList;
 	private ObservableList<Questionnaire> quizList;
+	private ObservableList<Reponse> reponsesList;
 	private PersonnViewController personnViewController;
 	private WebGate webGate;
 	private TaskQueue taskQueue;
@@ -86,11 +87,9 @@ public class Main extends Application implements Observer {
 	}
 
 	/**
-	 * Opens a dialog to edit details for the specified person. If the user clicks OK, the changes are saved into the provided person object
-	 * and true is returned.
+	 * Opens a dialog to edit details for the specified person. If the user clicks OK, the changes are saved into the provided person object and true is returned.
 	 *
-	 * @param user
-	 *            the person object to be edited
+	 * @param user the person object to be edited
 	 * @return true if the user clicked OK, false otherwise.
 	 */
 	public boolean showPersonEditDialog(Utilisateur user) {
@@ -134,14 +133,16 @@ public class Main extends Application implements Observer {
 		taskQueue = new TaskQueue("mainFx", webGate);
 		taskQueue.addObserver(this);
 
-		usersList = FXCollections.observableArrayList();
-		quizList = FXCollections.observableArrayList();
+		usersList = webGate.getList(Utilisateur.class);
+		quizList = webGate.getList(Questionnaire.class);
+		reponsesList = webGate.getList(Reponse.class);
 		/*
-		 * try { List<Utilisateur> users = webGate.getAll(Utilisateur.class); for (Utilisateur u : users) { usersList.add(u); } } catch
-		 * (IOException e) { // TODO Alert Bootstrap JavaFX e.printStackTrace(); }
+		 * try { List<Utilisateur> users = webGate.getAll(Utilisateur.class); for (Utilisateur u : users) { usersList.add(u); } } catch (IOException e) { // TODO Alert Bootstrap JavaFX
+		 * e.printStackTrace(); }
 		 */
-		taskQueue.getAll(Utilisateur.class);
 		taskQueue.getAll(Questionnaire.class);
+		taskQueue.getAll(Reponse.class);
+		taskQueue.getAll(Utilisateur.class);
 
 	}
 
@@ -187,12 +188,15 @@ public class Main extends Application implements Observer {
 		// System.out.println(arg);
 		Object[] args = (Object[]) arg;
 		if (args[0].equals(SaveOperationTypes.GET)) {
-			if (args[1].equals(Utilisateur.class)) {
-				List<Utilisateur> lstUser = (List<Utilisateur>) args[2];
-				for (Utilisateur u : lstUser) {
-					usersList.add(u);
-				}
-			}
+			webGate.addAll((List<Object>) args[2], (Class<Object>) args[1]);
 		}
+	}
+
+	public ObservableList<Questionnaire> getQuizData() {
+		return quizList;
+	}
+
+	public ObservableList<Reponse> getReponsesList() {
+		return reponsesList;
 	}
 }

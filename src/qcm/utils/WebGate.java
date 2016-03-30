@@ -11,15 +11,21 @@ import org.apache.http.client.ClientProtocolException;
 
 import com.google.gson.Gson;
 
+import javafx.collections.ObservableList;
+
 public class WebGate {
 	private Map<String, String> restUrlMappings;
+	private Map<Class<? extends Object>, WebGateList> modelLists;
 	private String baseUrl;
 
 	public WebGate() {
+		modelLists = new HashMap<>();
 		baseUrl = "http://127.0.0.1:8080/Quiz-Rest/rest/";
 		restUrlMappings = new HashMap<>();
 		restUrlMappings.put("Utilisateur", "user");
 		restUrlMappings.put("Questionnaire", "quiz");
+		restUrlMappings.put("Question", "question");
+		restUrlMappings.put("Reponse", "reponse");
 	}
 
 	private <T> String getControllerUrl(Class<T> clazz) {
@@ -75,13 +81,11 @@ public class WebGate {
 		return HttpUtils.deleteHTML(baseUrl + getControllerUrl(object.getClass()) + "/" + String.valueOf(id));
 	}
 
-	public <T> String add(T object)
-			throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
+	public <T> String add(T object) throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
 		return HttpUtils.putHTML(baseUrl + getControllerUrl(object.getClass()) + "/add", beanToMap(object));
 	}
 
-	public <T> String update(T object, Object id)
-			throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
+	public <T> String update(T object, Object id) throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
 		return HttpUtils.postHTML(baseUrl + getControllerUrl(object.getClass()) + "/update/" + id, beanToMap(object));
 	}
 
@@ -90,7 +94,43 @@ public class WebGate {
 		Gson gson = MyGsonBuilder.create();
 		int result = gson.fromJson(jsonO, Integer.class);
 		return result;
+	}
 
+	public <T> boolean isModified(Class<T> clazz) throws ClientProtocolException, IOException {
+		if (!modelLists.containsKey(clazz))
+			return true;
+		WebGateList wgList = modelLists.get(clazz);
+		if (wgList.getTimestamp() == null)
+			return true;
+		String jsonO = HttpUtils.getHTML(baseUrl + getControllerUrl(clazz) + "/updated/" + wgList.getTimestamp());
+		Gson gson = MyGsonBuilder.create();
+		boolean result = gson.fromJson(jsonO, Boolean.class);
+		return result;
+	}
+
+	public <T> WebGateList getWebGateList(Class<T> clazz) {
+		if (!modelLists.containsKey(clazz))
+			modelLists.put(clazz, new WebGateList());
+		return modelLists.get(clazz);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Object> ObservableList<T> getList(Class<T> clazz) {
+		if (!modelLists.containsKey(clazz))
+			modelLists.put(clazz, new WebGateList());
+		return (ObservableList<T>) modelLists.get(clazz).getList();
+	}
+
+	public <T extends Object> boolean add(T o, Class<T> clazz) {
+		return getList(clazz).add(o);
+	}
+
+	public boolean addAll(List<Object> list, Class<Object> clazz) {
+		return getList(clazz).addAll(list);
+	}
+
+	public void clearList(Class<Object> clazz) {
+		getList(clazz).clear();
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.concurrent.DelayQueue;
 import java.util.concurrent.TimeUnit;
 
 import qcm.utils.WebGate;
+import qcm.utils.WebGateList;
 
 public class TaskQueue extends Observable {
 	private DelayQueue<DelayedTask> tasks;
@@ -18,7 +19,7 @@ public class TaskQueue extends Observable {
 		this.name = name;
 		tasks = new DelayQueue<DelayedTask>();
 		this.webGate = webGate;
-		this.rowGroupSize = 30;
+		this.rowGroupSize = 50;
 		service = new DelayedService(this);
 	}
 
@@ -53,7 +54,7 @@ public class TaskQueue extends Observable {
 				return webGate.delete(o, id);
 			}
 		};
-		put(new DelayedTask(deleteOperation, 10000));
+		put(new DelayedTask(deleteOperation, 5000));
 	}
 
 	public void get(Class<? extends Object> clazz, int offset, int limit) {
@@ -70,13 +71,23 @@ public class TaskQueue extends Observable {
 	public void getAll(Class<? extends Object> clazz) {
 		int size = 10;
 		try {
-			size = webGate.count(clazz);
+			if (webGate.isModified(clazz)) {
+				WebGateList wgList = webGate.getWebGateList(clazz);
+				wgList.getList().clear();
+				try {
+					size = webGate.count(clazz);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				for (int i = 0; i < size / rowGroupSize + 1; i++) {
+					get(clazz, i * rowGroupSize, rowGroupSize);
+				}
+				wgList.setTimestamp(System.currentTimeMillis());
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		for (int i = 0; i < size / rowGroupSize + 1; i++) {
-			get(clazz, i * rowGroupSize, rowGroupSize);
 		}
 	}
 

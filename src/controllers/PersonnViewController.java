@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
@@ -14,7 +15,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import qcm.models.pojo.Questionnaire;
+import qcm.models.pojo.Reponse;
 import qcm.models.pojo.Utilisateur;
+import qcm.utils.GenericCellFactory;
 
 public class PersonnViewController {
 	@FXML
@@ -40,6 +43,9 @@ public class PersonnViewController {
 	private ListView<Questionnaire> lvQuizzes;
 
 	@FXML
+	private ComboBox<Reponse> cmbReponses;
+
+	@FXML
 	private ProgressBar pbTasks;
 
 	private Main mainApp;
@@ -63,8 +69,9 @@ public class PersonnViewController {
 			return new SimpleObjectProperty<>(user.getNom());
 		});
 		showUser(null);
-		personnTable.getSelectionModel().selectedItemProperty()
-				.addListener((observable, oldValue, newValue) -> showUser(newValue));
+		personnTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUser(newValue));
+		lvQuizzes.setCellFactory(new GenericCellFactory<Questionnaire>());
+		cmbReponses.setCellFactory(new GenericCellFactory<Reponse>());
 	}
 
 	public TableView<Utilisateur> getPersonnTable() {
@@ -94,6 +101,8 @@ public class PersonnViewController {
 	public void setMainApp(Main mainApp) {
 		this.mainApp = mainApp;
 		personnTable.setItems(mainApp.getPersonData());
+		lvQuizzes.setItems(mainApp.getQuizData());
+		cmbReponses.setItems(mainApp.getReponsesList());
 		lblCount.textProperty().bind(mainApp.getTaskQueue().getService().progressProperty().asString());
 		pbTasks.progressProperty().bind(mainApp.getTaskQueue().getService().progressProperty());
 	}
@@ -114,8 +123,10 @@ public class PersonnViewController {
 	@FXML
 	public void deleteUser() {
 		int selectedIndex = personnTable.getSelectionModel().getSelectedIndex();
+		Utilisateur selectedUser = personnTable.getSelectionModel().getSelectedItem();
 		if (selectedIndex >= 0) {
 			personnTable.getItems().remove(selectedIndex);
+			mainApp.getTaskQueue().delete(selectedUser, selectedUser.getId());
 		} else {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.initOwner(mainApp.getPrimaryStage());
@@ -128,6 +139,7 @@ public class PersonnViewController {
 	}
 
 	public void handleAddUser() {
+		mainApp.getTaskQueue().getAll(Utilisateur.class);
 		Utilisateur user = new Utilisateur();
 		boolean okClicked = mainApp.showPersonEditDialog(user);
 		if (okClicked) {
