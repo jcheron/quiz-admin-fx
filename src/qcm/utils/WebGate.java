@@ -56,21 +56,16 @@ public class WebGate {
 
 	}
 
-	public Utilisateur connect(String login, String password) {
+	public Utilisateur connect(String login, String password) throws ClientProtocolException, IOException {
 		Utilisateur user = null;
 		Map<String, Object> params = new HashMap<>();
 		params.put("login", login);
 		params.put("password", password);
-		try {
-			String jsonString = HttpUtils.postHTML(baseUrl + getControllerUrl(Utilisateur.class) + "/connect", params);
-			Gson gson = MyGsonBuilder.create();
-			JsonObject jso = gson.fromJson(jsonString, JsonObject.class);
-			if (jso.get("connected") != null) {
-				user = gson.fromJson(jso.get("utilisateur"), Utilisateur.class);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String jsonString = HttpUtils.postHTML(baseUrl + getControllerUrl(Utilisateur.class) + "/connect", params);
+		Gson gson = MyGsonBuilder.create();
+		JsonObject jso = gson.fromJson(jsonString, JsonObject.class);
+		if (jso.get("connected") != null) {
+			user = gson.fromJson(jso.get("utilisateur"), Utilisateur.class);
 		}
 		return user;
 	}
@@ -102,11 +97,13 @@ public class WebGate {
 		return HttpUtils.deleteHTML(baseUrl + getControllerUrl(object.getClass()) + "/" + String.valueOf(id));
 	}
 
-	public <T> String add(T object) throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
+	public <T> String add(T object)
+			throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
 		return HttpUtils.putHTML(baseUrl + getControllerUrl(object.getClass()) + "/add", beanToMap(object));
 	}
 
-	public <T> String update(T object, Object id) throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
+	public <T> String update(T object, Object id)
+			throws ClientProtocolException, IllegalArgumentException, IllegalAccessException, IOException {
 		return HttpUtils.postHTML(baseUrl + getControllerUrl(object.getClass()) + "/update/" + id, beanToMap(object));
 	}
 
