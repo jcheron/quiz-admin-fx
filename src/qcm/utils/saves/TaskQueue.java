@@ -76,6 +76,7 @@ public class TaskQueue extends Observable {
 				wgList.getList().clear();
 				try {
 					size = webGate.count(clazz);
+					service.setOpCount(size);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

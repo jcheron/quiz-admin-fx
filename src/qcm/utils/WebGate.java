@@ -10,8 +10,10 @@ import java.util.Map;
 import org.apache.http.client.ClientProtocolException;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import javafx.collections.ObservableList;
+import qcm.models.pojo.Utilisateur;
 
 public class WebGate {
 	private Map<String, String> restUrlMappings;
@@ -52,6 +54,25 @@ public class WebGate {
 		}
 		return result;
 
+	}
+
+	public Utilisateur connect(String login, String password) {
+		Utilisateur user = null;
+		Map<String, Object> params = new HashMap<>();
+		params.put("login", login);
+		params.put("password", password);
+		try {
+			String jsonString = HttpUtils.postHTML(baseUrl + getControllerUrl(Utilisateur.class) + "/connect", params);
+			Gson gson = MyGsonBuilder.create();
+			JsonObject jso = gson.fromJson(jsonString, JsonObject.class);
+			if (jso.get("connected") != null) {
+				user = gson.fromJson(jso.get("utilisateur"), Utilisateur.class);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return user;
 	}
 
 	public <T> List<T> getAll(Class<T> clazz) throws ClientProtocolException, IOException {

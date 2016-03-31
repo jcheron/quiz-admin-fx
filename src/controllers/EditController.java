@@ -5,10 +5,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import qcm.models.pojo.Utilisateur;
 
-public class EditController {
+public class EditController extends ModalController {
 
 	@FXML
 	private TextField txtNom;
@@ -25,40 +24,13 @@ public class EditController {
 	@FXML
 	private Button btCancel;
 
-	private Stage dialogStage;
 	private Utilisateur user;
-	private boolean okClicked = false;
-
-	/**
-	 * Initializes the controller class. This method is automatically called after the fxml file has been loaded.
-	 */
-	@FXML
-	private void initialize() {
-	}
-
-	/**
-	 * Sets the stage of this dialog.
-	 *
-	 * @param dialogStage
-	 */
-	public void setDialogStage(Stage dialogStage) {
-		this.dialogStage = dialogStage;
-	}
 
 	public void setUser(Utilisateur user) {
 		this.user = user;
 		txtNom.setText(user.getNom());
 		txtPrenom.setText(user.getPrenom());
 		txtEmail.setText(user.getMail());
-	}
-
-	/**
-	 * Returns true if the user clicked OK, false otherwise.
-	 *
-	 * @return
-	 */
-	public boolean isOkClicked() {
-		return okClicked;
 	}
 
 	/**

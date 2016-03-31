@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -44,6 +43,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <Label text="Nom" GridPane.rowIndex="0">
@@ -64,6 +64,7 @@
                         <Label id="name" fx:id="nomLabel" text="Label" GridPane.columnIndex="1" />
                         <Label id="surName" fx:id="prenomLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label id="email" fx:id="emailLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="cmbReponses" prefHeight="30.0" prefWidth="498.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
                   <ButtonBar layoutX="81.0" layoutY="245.0" prefHeight="40.0" prefWidth="362.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
@@ -73,10 +74,7 @@
                         <Button mnemonicParsing="false" onAction="#deleteUser" text="Supprimer" />
                     </buttons>
                   </ButtonBar>
-                  <Label fx:id="lblCount" layoutX="40.0" layoutY="220.0" prefHeight="21.0" prefWidth="53.0" text="Label" AnchorPane.bottomAnchor="58.0" AnchorPane.leftAnchor="40.0" />
-                  <ProgressBar fx:id="pbTasks" layoutX="100.0" layoutY="220.0" opacity="0.68" prefHeight="21.0" prefWidth="280.0" progress="0.0" AnchorPane.bottomAnchor="58.0" AnchorPane.rightAnchor="15.0" />
-                  <ListView fx:id="lvQuizzes" layoutX="14.0" layoutY="131.0" prefHeight="248.0" prefWidth="222.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="132.0" />
-                  <ComboBox fx:id="cmbReponses" layoutX="243.0" layoutY="132.0" prefHeight="30.0" prefWidth="255.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="132.0" />
+                  <ListView fx:id="lvQuizzes" layoutX="7.0" layoutY="155.0" prefHeight="260.0" prefWidth="491.0" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="155.0" />
                </children>
             </AnchorPane>
         </items>

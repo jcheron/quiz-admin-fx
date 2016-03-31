@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.function.Function;
 
 import controllers.EditController;
+import controllers.LoginController;
 import controllers.MainController;
 import controllers.PersonnViewController;
 import javafx.application.Application;
@@ -14,11 +16,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcm.models.pojo.Questionnaire;
 import qcm.models.pojo.Reponse;
 import qcm.models.pojo.Utilisateur;
+import qcm.utils.ViewUtils;
 import qcm.utils.WebGate;
 import qcm.utils.saves.SaveOperationTypes;
 import qcm.utils.saves.TaskQueue;
@@ -32,16 +34,18 @@ public class Main extends Application implements Observer {
 	private PersonnViewController personnViewController;
 	private WebGate webGate;
 	private TaskQueue taskQueue;
+	private MainController mainController;
 
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("AddressApp");
+		this.primaryStage.setTitle("Quiz-Admin");
 
 		initRootLayout();
 
-		showPersonOverview();
+		// showPersonOverview();
 		taskQueue.start();
+		showConnexion();
 	}
 
 	/**
@@ -53,8 +57,10 @@ public class Main extends Application implements Observer {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("/views/MainView.fxml"));
 			rootLayout = (BorderPane) loader.load();
-			MainController ctrl = loader.getController();
-			ctrl.setMainApp(this);
+			mainController = loader.getController();
+			mainController.setMainApp(this);
+			mainController.getPbTasks().progressProperty().bind(taskQueue.getService().progressProperty());
+
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
@@ -93,33 +99,26 @@ public class Main extends Application implements Observer {
 	 * @return true if the user clicked OK, false otherwise.
 	 */
 	public boolean showPersonEditDialog(Utilisateur user) {
-		try {
-			// Load the fxml file and create a new stage for the popup dialog.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("/views/EditView.fxml"));
-			AnchorPane page = (AnchorPane) loader.load();
+		return ViewUtils.showDialog("/views/EditView.fxml", primaryStage, new Function<EditController, String>() {
+			@Override
+			public String apply(EditController t) {
+				t.setUser(user);
+				return "Edition utilisateur";
+			}
+		});
+	}
 
-			// Create the dialog Stage.
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Edition utilisateur");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.setResizable(false);
-			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(page);
-			dialogStage.setScene(scene);
+	public void showConnexion() {
+		if (ViewUtils.showDialog("/views/LoginView.fxml", primaryStage, new Function<LoginController, String>() {
 
-			// Set the person into the controller.
-			EditController controller = loader.getController();
-			controller.setDialogStage(dialogStage);
-			controller.setUser(user);
-
-			// Show the dialog and wait until the user closes it
-			dialogStage.showAndWait();
-
-			return controller.isOkClicked();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+			@Override
+			public String apply(LoginController t) {
+				t.setMainApp(Main.this);
+				return "Connexion";
+			}
+		})) {
+			showPersonOverview();
+			loadLists();
 		}
 	}
 
@@ -140,10 +139,7 @@ public class Main extends Application implements Observer {
 		 * try { List<Utilisateur> users = webGate.getAll(Utilisateur.class); for (Utilisateur u : users) { usersList.add(u); } } catch (IOException e) { // TODO Alert Bootstrap JavaFX
 		 * e.printStackTrace(); }
 		 */
-		taskQueue.getAll(Questionnaire.class);
-		taskQueue.getAll(Reponse.class);
-		taskQueue.getAll(Utilisateur.class);
-
+		// loadLists();
 	}
 
 	/**
@@ -184,8 +180,6 @@ public class Main extends Application implements Observer {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Observable o, Object arg) {
-		// System.out.println(o);
-		// System.out.println(arg);
 		Object[] args = (Object[]) arg;
 		if (args[0].equals(SaveOperationTypes.GET)) {
 			webGate.addAll((List<Object>) args[2], (Class<Object>) args[1]);
@@ -198,5 +192,11 @@ public class Main extends Application implements Observer {
 
 	public ObservableList<Reponse> getReponsesList() {
 		return reponsesList;
+	}
+
+	public void loadLists() {
+		taskQueue.getAll(Utilisateur.class);
+		taskQueue.getAll(Questionnaire.class);
+		taskQueue.getAll(Reponse.class);
 	}
 }

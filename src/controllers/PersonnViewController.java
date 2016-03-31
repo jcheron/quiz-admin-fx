@@ -10,7 +10,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -37,16 +36,10 @@ public class PersonnViewController {
 	private Label emailLabel;
 
 	@FXML
-	private Label lblCount;
-
-	@FXML
 	private ListView<Questionnaire> lvQuizzes;
 
 	@FXML
 	private ComboBox<Reponse> cmbReponses;
-
-	@FXML
-	private ProgressBar pbTasks;
 
 	private Main mainApp;
 
@@ -103,8 +96,7 @@ public class PersonnViewController {
 		personnTable.setItems(mainApp.getPersonData());
 		lvQuizzes.setItems(mainApp.getQuizData());
 		cmbReponses.setItems(mainApp.getReponsesList());
-		lblCount.textProperty().bind(mainApp.getTaskQueue().getService().progressProperty().asString());
-		pbTasks.progressProperty().bind(mainApp.getTaskQueue().getService().progressProperty());
+		// lblCount.textProperty().bind(mainApp.getTaskQueue().getService().progressProperty().asString());
 	}
 
 	private void showUser(Utilisateur user) {
