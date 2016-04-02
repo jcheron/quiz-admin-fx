@@ -56,23 +56,18 @@ public class WebGate {
 
 	}
 
-	public Utilisateur connect(String login, String password) {
+	public Utilisateur connect(String login, String password) throws ClientProtocolException, IOException {
 		Utilisateur user = null;
 		Map<String, Object> params = new HashMap<>();
 		params.put("login", login);
 		params.put("password", password);
-		try {
-			String jsonString = HttpUtils.postHTML(baseUrl + getControllerUrl(Utilisateur.class) + "/connect", params);
-			Gson gson = MyGsonBuilder.create();
-			JsonObject jso = gson.fromJson(jsonString, JsonObject.class);
-			if (jso.get("connected") != null) {
-				user = gson.fromJson(jso.get("utilisateur"), Utilisateur.class);
-				HttpUtils.accessToken = String.valueOf(jso.get("token"));
+		String jsonString = HttpUtils.postHTML(baseUrl + getControllerUrl(Utilisateur.class) + "/connect", params);
+		Gson gson = MyGsonBuilder.create();
+		JsonObject jso = gson.fromJson(jsonString, JsonObject.class);
+		if (jso.get("connected") != null) {
+			user = gson.fromJson(jso.get("utilisateur"), Utilisateur.class);
+			HttpUtils.accessToken = String.valueOf(jso.get("token"));
 
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return user;
 	}

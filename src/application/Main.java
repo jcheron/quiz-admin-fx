@@ -6,11 +6,13 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.function.Function;
 
+import controllers.AccueilController;
 import controllers.EditController;
 import controllers.LoginController;
 import controllers.MainController;
 import controllers.PersonnViewController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -32,17 +34,18 @@ public class Main extends Application implements Observer {
 	private ObservableList<Questionnaire> quizList;
 	private ObservableList<Reponse> reponsesList;
 	private PersonnViewController personnViewController;
+	private AccueilController accueilController;
 	private WebGate webGate;
 	private TaskQueue taskQueue;
 	private MainController mainController;
+	private Utilisateur activeUser;
 
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Quiz-Admin");
-
+		this.primaryStage.setOnCloseRequest(e -> Platform.exit());
 		initRootLayout();
-
 		// showPersonOverview();
 		taskQueue.start();
 		showConnexion();
@@ -63,6 +66,7 @@ public class Main extends Application implements Observer {
 
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(rootLayout);
+			scene.getStylesheets().add(Main.class.getResource("/views/my.css").toString());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (IOException e) {
@@ -73,23 +77,17 @@ public class Main extends Application implements Observer {
 	/**
 	 * Shows the person overview inside the root layout.
 	 */
+	public void showAccueilview() {
+		// personnViewController = ViewUtils.loadCenterPane("/views/PersonnView.fxml", this, AnchorPane.class);
+		accueilController = ViewUtils.loadCenterPane("/views/AccueilView.fxml", this, AnchorPane.class);
+	}
+
+	/**
+	 * Shows the person overview inside the root layout.
+	 */
+
 	public void showPersonOverview() {
-		try {
-			// Load person overview.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("/views/PersonnView.fxml"));
-			AnchorPane personOverview = (AnchorPane) loader.load();
-
-			// Set person overview into the center of root layout.
-			rootLayout.setCenter(personOverview);
-
-			// Give the controller access to the main app.
-			personnViewController = loader.getController();
-			personnViewController.setMainApp(this);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		personnViewController = ViewUtils.loadCenterPane("/views/PersonnView.fxml", this, AnchorPane.class);
 	}
 
 	/**
@@ -116,9 +114,18 @@ public class Main extends Application implements Observer {
 				t.setMainApp(Main.this);
 				return "Connexion";
 			}
+		}, new Function<LoginController, Boolean>() {
+
+			@Override
+			public Boolean apply(LoginController t) {
+				Main.this.activeUser = t.getUser();
+				return Main.this.activeUser != null;
+			}
+
 		})) {
-			showPersonOverview();
+			showAccueilview();
 			loadLists();
+			accueilController.setQuizzes(activeUser.getQuestionnaires());
 		}
 	}
 
@@ -198,5 +205,17 @@ public class Main extends Application implements Observer {
 		taskQueue.getAll(Utilisateur.class);
 		taskQueue.getAll(Questionnaire.class);
 		taskQueue.getAll(Reponse.class);
+	}
+
+	public BorderPane getRootLayout() {
+		return rootLayout;
+	}
+
+	public Utilisateur getActiveUser() {
+		return activeUser;
+	}
+
+	public void setActiveUser(Utilisateur activeUser) {
+		this.activeUser = activeUser;
 	}
 }

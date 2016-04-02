@@ -1,5 +1,7 @@
 package controllers;
 
+import java.io.IOException;
+
 import application.Main;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,13 +27,18 @@ public class LoginController extends ModalController {
 	private Utilisateur user;
 
 	public void handleConnexion() {
-		user = mainApp.getWebGate().connect(txtLogin.getText(), txtPassword.getText());
-		if (user != null) {
-			lblMessage.setVisible(false);
-			okClicked = true;
-			dialogStage.close();
-		} else {
-			lblMessage.setText("Login ou mot de passe invalides");
+		try {
+			user = mainApp.getWebGate().connect(txtLogin.getText(), txtPassword.getText());
+			if (user != null) {
+				lblMessage.setVisible(false);
+				okClicked = true;
+				dialogStage.close();
+			} else {
+				lblMessage.setText("Login ou mot de passe invalides");
+				lblMessage.setVisible(true);
+			}
+		} catch (IOException e) {
+			lblMessage.setText(e.getMessage());
 			lblMessage.setVisible(true);
 		}
 	}
