@@ -18,7 +18,7 @@ import qcm.models.pojo.Reponse;
 import qcm.models.pojo.Utilisateur;
 import qcm.utils.GenericCellFactory;
 
-public class PersonnViewController {
+public class PersonnViewController extends AbstractController {
 	@FXML
 	private TableView<Utilisateur> personnTable;
 	@FXML
@@ -40,8 +40,6 @@ public class PersonnViewController {
 
 	@FXML
 	private ComboBox<Reponse> cmbReponses;
-
-	private Main mainApp;
 
 	public PersonnViewController() {
 		// TODO Auto-generated constructor stub
@@ -92,7 +90,7 @@ public class PersonnViewController {
 	}
 
 	public void setMainApp(Main mainApp) {
-		this.mainApp = mainApp;
+		super.setMainApp(mainApp);
 		personnTable.setItems(mainApp.getPersonData());
 		lvQuizzes.setItems(mainApp.getQuizData());
 		cmbReponses.setItems(mainApp.getReponsesList());

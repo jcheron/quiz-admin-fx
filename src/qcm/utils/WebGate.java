@@ -67,12 +67,24 @@ public class WebGate {
 			JsonObject jso = gson.fromJson(jsonString, JsonObject.class);
 			if (jso.get("connected") != null) {
 				user = gson.fromJson(jso.get("utilisateur"), Utilisateur.class);
+				HttpUtils.accessToken = String.valueOf(jso.get("token"));
+
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return user;
+	}
+
+	public boolean disconnect() {
+		try {
+			HttpUtils.getHTML(baseUrl + getControllerUrl(Utilisateur.class) + "/disconnect");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	public <T> List<T> getAll(Class<T> clazz) throws ClientProtocolException, IOException {
@@ -88,6 +100,14 @@ public class WebGate {
 		String jsonUsers = HttpUtils.getHTML(baseUrl + getControllerUrl(clazz) + "/limit/" + offset + "/" + limit);
 		Gson gson = MyGsonBuilder.create();
 		result = gson.fromJson(jsonUsers, new ListType<T>(clazz));
+		return result;
+	}
+
+	public <T, R> List<R> getAllMember(Class<T> clazz, int id, String member, Class<R> returnClazz) throws ClientProtocolException, IOException {
+		List<R> result = new ArrayList<R>();
+		String jsonUsers = HttpUtils.getHTML(baseUrl + getControllerUrl(clazz) + "/" + id + "/all/" + member + "/2");
+		Gson gson = MyGsonBuilder.create();
+		result = gson.fromJson(jsonUsers, new ListType<R>(returnClazz));
 		return result;
 	}
 
